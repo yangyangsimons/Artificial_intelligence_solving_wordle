@@ -2,17 +2,17 @@
 import Data_Processing as data
 import termcolor as colored
 import random
-ObjectWord = random.choice(data.test_word_list)
+
 
 def __validWord__(answer):
     if(len(answer) > 5):
-        print("5 letters only")
+        # print("5 letters only")
         return False
     else:
         if(answer in data.valid_word_list):
             return True
         else:
-            print("This is not a valid word")
+            # print("This is not a valid word")
             return False
 
 def __feedback__(userWord, targetWord):
