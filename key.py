@@ -1,7 +1,6 @@
 import Wordle_Simulation as ws
 import Data_Processing as data
 from string import ascii_lowercase
-import random
 import math
 import keyboard as kb
 from PIL import ImageGrab
@@ -82,13 +81,17 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
             continue
     return new_valid_list
 
+# screen shot position, left top right bottom, left and right is solid each capture, only top and bottom is variable
 def __ScreenShot__(top):
     screenShot = ImageGrab.grab(bbox=(1100, top, 1780, top + 135))
     screenShot.save("data/screenshot/img2.png") 
 
-# screen shot position, left top right bottom, left and right is solid each capture, only top and bottom is variable
+# project initialize, set the top equals to 410 and initialize the model.
+
 top = 410
 ig.__Website__Feedback__()
+
+# use a loop to guess the correct word
 for i in range(6):
     if (i == 0):
         newWordList = data.valid_word_list

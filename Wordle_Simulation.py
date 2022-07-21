@@ -1,8 +1,5 @@
 
 import Data_Processing as data
-import termcolor as colored
-import random
-
 
 def __validWord__(answer):
     if(len(answer) > 5):
