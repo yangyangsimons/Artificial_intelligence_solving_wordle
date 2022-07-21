@@ -37,7 +37,7 @@ for c in cnts:
         ROI = cv2.resize(ROI, (68, 68))#Resizes the square-containing alphabet to 68x68 pixels
         cv2.imwrite('Alphabets/ROI_{}.png'.format(image_number), ROI) #saves the square-containing alphabet
         cv2.rectangle(image, (x, y), (x + w, y + h), (255,0,0), 2) #produces blue-coloured rectangles on each contour found
-        image_number += 1 #counts number of contours and adds by 1 in the for loop
+        image_number = image_number + 1 #counts number of contours and adds by 1 in the for loop
 # cv2.imwrite("Contours detected in Image", image) #displays the blue rectangle-bounded image to display all contours
 
 #0: grey, 1: yellow, 2: green.
@@ -109,10 +109,13 @@ def __Website__Feedback__():
             ROI = image[y:y+h, x:x+w]
             ROI = cv2.resize(ROI, (68, 68))
             cv2.imwrite('Alphabets/ROI_{}.png'.format(image_number), ROI)
-
             final_color, RGB = predict_color(ROI)
+            print(image_number)
             #print alphabet and color predicted and the RGB value associated
             colours.append(final_color)
             cv2.rectangle(image, (x, y), (x + w, y + h), (255,0,0), 2)
-            image_number += 1
+            image_number = image_number + 1
     return colours
+
+result = __Website__Feedback__()
+print(result)

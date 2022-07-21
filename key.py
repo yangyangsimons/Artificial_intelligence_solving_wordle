@@ -83,7 +83,7 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
 
 # screen shot position, left top right bottom, left and right is solid each capture, only top and bottom is variable
 def __ScreenShot__(top):
-    screenShot = ImageGrab.grab(bbox=(1100, top, 1780, top + 135))
+    screenShot = ImageGrab.grab(bbox=(1105, top, 1775, top + 135))
     screenShot.save("data/screenshot/img2.png") 
 
 # project initialize, set the top equals to 410 and initialize the model.
