@@ -22,11 +22,16 @@ def __feedback__(userWord, targetWord):
         for i in range(len(targetWord)):
             # check if this letter is in target word
             if(userWord[i] in targetWord):
-                if (userWord[i] == targetWord[i]):
+                if(userWord[i] == targetWord[i]):
                     color.append("green")
                 else:
-                    color.append("yellow")
+                    if(userWord.find(userWord[i]) == i):
+                        color.append("yellow")
+                    else:
+                        if(color.count("yellow") < targetWord.count(userWord[i])):
+                            color.append("yellow")
+                        else:
+                            color.append("grey")
             else:
                 color.append("grey")
     return color
-

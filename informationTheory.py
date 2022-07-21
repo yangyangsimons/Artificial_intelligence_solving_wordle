@@ -32,6 +32,7 @@ def __Calculate__Entropy__Based__On__Position(wordList):
     return entropyList
 
 
+
 # select the word based on highest entropy
 def __selectWord__(wordList,entropyList):
     selectedWord = wordList[entropyList.index(max(entropyList))]
@@ -67,14 +68,16 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
             if(word.find(letter) == -1):
                 letter_status.append(True)
             else:
-                letter_status.append(False)
+                if(letter in yellow_dic.values() or letter in green_dic.values()):
+                    letter_status.append(True)
+                else:
+                    letter_status.append(False)
         if(all(letter_status)):
             new_valid_list.append(word)
             continue
         else:
             continue
     return new_valid_list
-
 
 
 successCount = 0
@@ -141,7 +144,6 @@ for testTimes in range(len(data.test_word_list)):
             # print(selectedWord +" " + objectWord)
             # successCount = successCount + 1
             break
-
-# get the final result
+    
 print(successCount/len(data.test_word_list))
 print(sum(roundList)/len(roundList))
