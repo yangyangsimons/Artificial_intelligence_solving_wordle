@@ -116,6 +116,3 @@ def __Website__Feedback__():
             cv2.rectangle(image, (x, y), (x + w, y + h), (255,0,0), 2)
             image_number = image_number + 1
     return colours
-
-result = __Website__Feedback__()
-print(result)

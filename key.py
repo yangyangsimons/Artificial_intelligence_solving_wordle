@@ -7,6 +7,7 @@ from PIL import ImageGrab
 import tkinter as tk
 import imageRecognization as ig
 import time
+import autoclick
 
 def __Calculate__Entropy__Based__On__Position(wordList):
     # first calculate the probability p(x)
@@ -88,8 +89,10 @@ def __ScreenShot__(top):
 
 # project initialize, set the top equals to 410 and initialize the model.
 
-top = 410
 ig.__Website__Feedback__()
+
+print("start the game")
+autoclick.__openAndResizeTheWebsite__()
 
 # use a loop to guess the correct word
 for i in range(6):
@@ -102,11 +105,16 @@ for i in range(6):
     print(len(newWordList))
     print(selectedWord)
     
-    top = 425
+    for letterIndex in range(len(selectedWord)):
+        autoclick.__autoClickLetters__(selectedWord[letterIndex])
+
+    time.sleep(0.5)
+    top = 447
     top = top + i * 135
-    kb.wait('enter')
+    
+    autoclick.__autoClickLetters__("↵")
     print("please wait for 3 seconds")
-    time.sleep(2)
+    time.sleep(3.5)
     __ScreenShot__(top)
     guessResult = ig.__Website__Feedback__()
     # objectWord = objectWord = ObjectWord = random.choice(data.test_word_list)
