@@ -89,8 +89,6 @@ def __ScreenShot__(top):
 
 # project initialize, set the top equals to 410 and initialize the model.
 
-ig.__Website__Feedback__()
-
 print("start the game")
 autoclick.__openAndResizeTheWebsite__()
 
@@ -116,7 +114,11 @@ for i in range(6):
     print("please wait for 3 seconds")
     time.sleep(3.5)
     __ScreenShot__(top)
-    guessResult = ig.__Website__Feedback__()
+    feedback = ig.__Website__Feedback__()
+    guessResult = []
+    for resultIndex in range(5):
+        guessResult.append(feedback[resultIndex])
+        
     # objectWord = objectWord = ObjectWord = random.choice(data.test_word_list)
     
     print(guessResult)

@@ -83,7 +83,7 @@ def __Website__Feedback__():
     #load image
     file = 'data/screenshot/img2.png'
     image = cv2.imread(file)
-    image = cv2.resize(image, (412, 365))
+    # image = cv2.resize(image, (412, 365))
 
     #load models
     co_model = load_model('Models/color.h5')
@@ -104,7 +104,7 @@ def __Website__Feedback__():
     colours = []
     for c in cnts:
         area = cv2.contourArea(c)
-        if area > 800:
+        if area > 1000:
             x,y,w,h = cv2.boundingRect(c)
             ROI = image[y:y+h, x:x+w]
             ROI = cv2.resize(ROI, (68, 68))
