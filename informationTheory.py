@@ -3,7 +3,7 @@ import Data_Processing as data
 from string import ascii_lowercase
 import random
 import math
-
+import re
 def __Calculate__Entropy__Based__On__Position(wordList):
     # first calculate the probability p(x)
     probabilityList = []
@@ -64,11 +64,11 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
                 letter_status.append(True)
             else:
                 letter_status.append(False)
-        for letter in grey_dic.values():
+        for index,letter in grey_dic.items():
             if(word.find(letter) == -1):
                 letter_status.append(True)
             else:
-                if(letter in yellow_dic.values() or letter in green_dic.values()):
+                if(letter in yellow_dic.values() or letter in green_dic.values() and word[index] != letter):
                     letter_status.append(True)
                 else:
                     letter_status.append(False)
@@ -82,68 +82,31 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
 
 successCount = 0
 roundList = []
+unsolvedWordList = []
 for testTimes in range(len(data.test_word_list)):
-    # select the first word to guess
-    entropyList = __Calculate__Entropy__Based__On__Position(data.valid_word_list,)
-    FirstSelectedWord = __selectWord__(data.valid_word_list,entropyList)
+
     # objectWord = random.choice(data.test_word_list)
     objectWord = data.test_word_list[testTimes]
-
     # use a timesPlay store how many times it takes to work out the right word
     timesPlay = 0
-    guessResult = ws.__feedback__(FirstSelectedWord,objectWord)
-    # print(objectWord)
-    # print(FirstSelectedWord)
-    # print(guessResult)
-    if(guessResult == ["green","green","green","green","green"]):
-        print(objectWord)
-        print(FirstSelectedWord)
-        print(guessResult)
-        successCount = successCount + 1
-        print("success")
-        timesPlay = 1
-        roundList.append(timesPlay)
-        continue
-    # second guess
-    newWordList = __Set__New__Word__List__(FirstSelectedWord,guessResult,data.valid_word_list)
-    entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
-    selectedWord = __selectWord__(newWordList,entropyList)
-    guessResult = ws.__feedback__(selectedWord,objectWord)
-    # print(len(newWordList))
-    # print(objectWord)
-    # print(selectedWord)
-    # print(guessResult)
-    if(guessResult == ["green","green","green","green","green"]):
-        print(objectWord)
-        print(selectedWord)
-        print(guessResult)
-        successCount = successCount + 1
-        print("success")
-        timesPlay = 2
-        roundList.append(timesPlay)
-        continue
-
-    for i in range(4):
-        newWordList = __Set__New__Word__List__(selectedWord,guessResult,newWordList)
+    for i in range(6):
+        if (i == 0):
+            newWordList = data.valid_word_list
+        else: 
+            newWordList = __Set__New__Word__List__(selectedWord,guessResult,newWordList)
         entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
         selectedWord = __selectWord__(newWordList,entropyList)
-        # objectWord = objectWord = ObjectWord = random.choice(data.test_word_list)
         guessResult = ws.__feedback__(selectedWord,objectWord)
-        # print(len(newWordList))
-        # print(objectWord)
-        # print(selectedWord)
-        # print(guessResult)
         if(guessResult == ["green","green","green","green","green"]):
-            print(objectWord)
-            print(selectedWord)
+            # print(objectWord)
+            # print(selectedWord)
             successCount = successCount + 1
-            timesPlay = i + 2
+            timesPlay = i + 1
             roundList.append(timesPlay)
-            print("success")
-            # round = i
-            # print(selectedWord +" " + objectWord)
-            # successCount = successCount + 1
             break
-    
+        if(i == 5):
+            print(selectedWord +" " + objectWord)
+            unsolvedWordList.append(objectWord)
+
 print(successCount/len(data.test_word_list))
 print(sum(roundList)/len(roundList))
