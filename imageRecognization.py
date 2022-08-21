@@ -4,8 +4,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from PIL import ImageGrab
-import tkinter as tk
 
 #Read the screenshot of the image saved in the directory
 image = cv2.imread('data/image.png')

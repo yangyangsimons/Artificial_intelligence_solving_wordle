@@ -58,7 +58,7 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
     for word in word_list:
         letter_status = []
         for index,letter in yellow_dic.items():
-            if(word.find(letter) != -1 and word[index] != letter):
+            if(word.find(letter) != -1 and word[index] != letter and word.count(letter) <= list(yellow_dic.values()).count(letter)):
                 letter_status.append(True)
             else:
                 letter_status.append(False)

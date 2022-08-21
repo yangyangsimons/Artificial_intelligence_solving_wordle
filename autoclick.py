@@ -9,6 +9,7 @@ driver.get("https://www.nytimes.com/games/wordle/index.html")
 
 def __openAndResizeTheWebsite__():
     driver.maximize_window()
+    print(driver.get_window_size())
     time.sleep(3)
     button = driver.find_element(by = By.ID, value = "pz-gdpr-btn-accept")
     button.click()
