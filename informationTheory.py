@@ -59,11 +59,13 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
                 letter_status.append(True)
             else:
                 letter_status.append(False)
+                break
         for index in green_dic.keys():
             if(word[index] == green_dic[index]):
                 letter_status.append(True)
             else:
                 letter_status.append(False)
+                break
         for index,letter in grey_dic.items():
             if(word.find(letter) == -1):
                 letter_status.append(True)
@@ -72,6 +74,7 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
                     letter_status.append(True)
                 else:
                     letter_status.append(False)
+                    break
         if(all(letter_status)):
             new_valid_list.append(word)
             continue
