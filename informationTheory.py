@@ -1,9 +1,10 @@
 import Wordle_Simulation as ws
 import Data_Processing as data
 from string import ascii_lowercase
-import random
+import pandas as pd
 import math
-import re
+
+
 def __Calculate__Entropy__Based__On__Position(wordList):
     # first calculate the probability p(x)
     probabilityList = []
@@ -25,7 +26,7 @@ def __Calculate__Entropy__Based__On__Position(wordList):
         for j in range(len(word)):
             probability = probabilityList[j][word[j]]
             information = math.log(1/probability,2)
-            entropy = entropy + probability * information
+            entropy = entropy + (probability * information)
 
         entropyList.append(entropy)
     # print(len(entropyList))
@@ -83,33 +84,52 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
     return new_valid_list
 
 
-successCount = 0
-roundList = []
-unsolvedWordList = []
-for testTimes in range(len(data.test_word_list)):
+def __PlayAndCount__(dataset,maxRoundAllowed):
+    successCount = 0
+    roundList = []
+    for testTimes in range(len(dataset)):
+        # objectWord = random.choice(data.test_word_list)
+        objectWord = dataset[testTimes]
+        # use a timesPlay store how many times it takes to work out the right word
+        timesPlay = 0
+        for i in range(maxRoundAllowed):
+            if (i == 0):
+                newWordList = data.valid_word_list
+                # selectedWord = "tares"
+                # guessResult = ws.__feedback__(selectedWord,objectWord)
+            else: 
+                newWordList = __Set__New__Word__List__(selectedWord,guessResult,newWordList)
+            entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
+            selectedWord = __selectWord__(newWordList,entropyList)
+            guessResult = ws.__feedback__(selectedWord,objectWord)
+            if(guessResult == ["green","green","green","green","green"]):
+                # print(objectWord)
+                # print(selectedWord)
+                successCount = successCount + 1
+                timesPlay = i + 1
+                roundList.append(timesPlay)
+                if(i <= 1):
+                    print("best: ", i)
+                    print(selectedWord,objectWord)
+                # if(i > 5):
+                #     print("worst:",i)
+                #     print(selectedWord,objectWord)
+                break
 
-    # objectWord = random.choice(data.test_word_list)
-    objectWord = data.test_word_list[testTimes]
-    # use a timesPlay store how many times it takes to work out the right word
-    timesPlay = 0
-    for i in range(6):
-        if (i == 0):
-            newWordList = data.valid_word_list
-        else: 
-            newWordList = __Set__New__Word__List__(selectedWord,guessResult,newWordList)
-        entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
-        selectedWord = __selectWord__(newWordList,entropyList)
-        guessResult = ws.__feedback__(selectedWord,objectWord)
-        if(guessResult == ["green","green","green","green","green"]):
-            # print(objectWord)
-            # print(selectedWord)
-            successCount = successCount + 1
-            timesPlay = i + 1
-            roundList.append(timesPlay)
-            break
-        if(i == 5):
-            print(selectedWord +" " + objectWord)
-            unsolvedWordList.append(objectWord)
+    return roundList,successCount
+# wordleAnswerRoundList,successCount = __PlayAndCount__(data.test_word_list,12)
+# print(successCount/len(data.test_word_list))
+# print(max(wordleAnswerRoundList))
+# print(sum(wordleAnswerRoundList)/len(wordleAnswerRoundList))
+# df = pd.DataFrame(wordleAnswerRoundList)
+# df.to_csv("./data/result/information-wordleAnswerlist.csv")
 
-print(successCount/len(data.test_word_list))
-print(sum(roundList)/len(roundList))
+print("-----------------")
+validWordsRoundList,validSuccessCount = __PlayAndCount__(data.valid_word_list,20)
+print(validSuccessCount/len(data.valid_word_list))
+maxValue = max(validWordsRoundList)
+maxValueIndex = validWordsRoundList.index(maxValue)
+print(data.valid_word_list[maxValueIndex])
+print(sum(validWordsRoundList)/len(validWordsRoundList))
+df = pd.DataFrame(validWordsRoundList)
+df.to_csv("./data/result/information-validWordList.csv")

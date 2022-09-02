@@ -2,6 +2,7 @@ import Wordle_Simulation as ws
 import Data_Processing as data
 from string import ascii_lowercase
 import random
+import pandas as pd
 
 # calculate the frequency of all(26) letters
 def __Calculate_Frequency__(wordList):
@@ -64,42 +65,53 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
             continue
     return new_valid_list
 
-successCount = 0
 
-for i in range(len(data.test_word_list)):
-    objectWord = random.choice(data.test_word_list)
-    # word_list = data.valid_word_list
-    # letterFrequency = __Calculate_Frequency__(word_list)
-    # # print(sortedLettersBasedOnFrequency)
-    # selectedWord= __Select_Word__(letterFrequency,word_list)
-    # # print(selectedWord)
-    # # print(objectWord)
-    # guessResult = ws.__feedback__(selectedWord,objectWord)
-    # # print(guessResult)
-    # if(guessResult == ["green","green","green","green","green"]):
-    #     # print("success")
-    #     print(selectedWord +" " + objectWord)
-    #     successCount = successCount + 1
-    #     break
+def __PlayAndCount__(dataset,maxRoundAllowed):
+    successCount = 0
+    roundList = []
+    for i in range(len(dataset)):
+        objectWord = dataset[i]
+        # use a timesPlay store how many times it takes to work out the right word
+        timesPlay = 0
+        for i in range(maxRoundAllowed):
+            if( i == 0):
+                word_list = data.valid_word_list
+            else:
+                word_list  = __Set__New__Word__List__(selectedWord,guessResult,word_list)
+            # print(len(word_list))
+            letterFrequency = __Calculate_Frequency__(word_list)
+            # print(sortedLettersBasedOnFrequency)
+            selectedWord = __Select_Word__(letterFrequency,word_list)
+            # print(objectWord)
+            guessResult = ws.__feedback__(selectedWord,objectWord)
+            # print(guessResult)
+            if(guessResult == ["green","green","green","green","green"]):
+                successCount = successCount + 1
+                timesPlay = i + 1
+                roundList.append(timesPlay)
+                if(i <= 1):
+                    print("best: ", i)
+                    print(selectedWord,objectWord)
+                if(i >= maxRoundAllowed - 4):
+                    print("worst:",i)
+                    print(selectedWord,objectWord)
+                break
+            # else:
+            #     if(i >= maxRoundAllowed - 3):
+            #         print("maybe worst:" + i)
+            #         print(selectedWord,objectWord)
+    return roundList,successCount
 
-    for i in range(6):
-        if( i == 0):
-            word_list = data.valid_word_list
-        else:
-            word_list  = __Set__New__Word__List__(selectedWord,guessResult,word_list)
-        # print(len(word_list))
-        letterFrequency = __Calculate_Frequency__(word_list)
-        # print(sortedLettersBasedOnFrequency)
-        selectedWord = __Select_Word__(letterFrequency,word_list)
-        # print(selectedWord)
-        # print(objectWord)
-        guessResult = ws.__feedback__(selectedWord,objectWord)
-        # print(guessResult)
-        if(guessResult == ["green","green","green","green","green"]):
-            successCount = successCount + 1
-            break
-        else:
-            if(i == 5):
-                print(selectedWord,objectWord)
-
+wordleAnswerRoundList,successCount = __PlayAndCount__(data.test_word_list,13)
 print(successCount/len(data.test_word_list))
+print(max(wordleAnswerRoundList))
+print(sum(wordleAnswerRoundList)/len(wordleAnswerRoundList))
+df = pd.DataFrame(wordleAnswerRoundList)
+df.to_csv("./data/result/probability-wordleAnswerlist.csv")
+# print("-----------------")
+# validWordsRoundList,validSuccessCount = __PlayAndCount__(data.valid_word_list,20)
+# print(validSuccessCount/len(data.valid_word_list))
+# print(max(validWordsRoundList))
+# print(sum(validWordsRoundList)/len(validWordsRoundList))
+# df = pd.DataFrame(validWordsRoundList)
+# df.to_csv("./data/result/probability-validWordList.csv")
