@@ -86,7 +86,7 @@ def __Website__Feedback__():
     #load models
     co_model = load_model('Models/color.h5')
 
-    #preprocessing of image
+    #preprocessing of imagex
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     #blur = cv2.medianBlur(gray, 5)
     sharpen_kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])

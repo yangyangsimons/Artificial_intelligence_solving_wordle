@@ -1,13 +1,43 @@
 import Wordle_Simulation as ws
 import Data_Processing as data
 from string import ascii_lowercase
+import pandas as pd
 import math
-import keyboard as kb
-from PIL import ImageGrab
-import tkinter as tk
-import imageRecognization as ig
-import time
-import autoclick
+
+
+def __Calculate_probabilityDistribution__(exampleWord,wordList):
+    result = []
+    result_dic = {}
+
+    for word in wordList:
+        feedback = ws.__feedback__(exampleWord,word)
+        subResult = "".join(feedback)
+
+        if(result.count(subResult) != 0):
+            index1 = result.index(subResult)
+            # key1 = "result" + index
+            result_dic[str(index1)] = result_dic[str(index1)] + 1
+        else:
+            result.append(subResult)
+            index2 = result.index(subResult)
+            # key2 = "result" + index
+            result_dic[str(index2)] = 1
+        # print(result_dic)
+    sortedResult_dic = dict(sorted(result_dic.items(), key=lambda item: item[1],reverse=True))
+    for key in sortedResult_dic.keys():
+        sortedResult_dic[key] = (sortedResult_dic[key] / len(wordList))
+    return sortedResult_dic
+
+def __Calculate_Entropy__(wordList):
+    entropy = 0
+    entropyList = []
+    for word in wordList:
+        wordProbabilityDic = __Calculate_probabilityDistribution__(word,wordList)
+        entropy = __Calculate_Entropy__(wordProbabilityDic)
+        entropyList.append(entropy)
+    return entropyList
+
+
 
 def __Calculate__Entropy__Based__On__Position(wordList):
     # first calculate the probability p(x)
@@ -30,11 +60,13 @@ def __Calculate__Entropy__Based__On__Position(wordList):
         for j in range(len(word)):
             probability = probabilityList[j][word[j]]
             information = math.log(1/probability,2)
-            entropy = entropy + probability * information
+            entropy = entropy + (probability * information)
 
         entropyList.append(entropy)
     # print(len(entropyList))
     return entropyList
+
+
 
 # select the word based on highest entropy
 def __selectWord__(wordList,entropyList):
@@ -58,15 +90,17 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
     for word in word_list:
         letter_status = []
         for index,letter in yellow_dic.items():
-            if(word.find(letter) != -1 and word[index] != letter and word.count(letter) <= list(yellow_dic.values()).count(letter)):
+            if(word.find(letter) != -1 and word[index] != letter):
                 letter_status.append(True)
             else:
                 letter_status.append(False)
+                break
         for index in green_dic.keys():
             if(word[index] == green_dic[index]):
                 letter_status.append(True)
             else:
                 letter_status.append(False)
+                break
         for index,letter in grey_dic.items():
             if(word.find(letter) == -1):
                 letter_status.append(True)
@@ -75,6 +109,7 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
                     letter_status.append(True)
                 else:
                     letter_status.append(False)
+                    break
         if(all(letter_status)):
             new_valid_list.append(word)
             continue
@@ -82,72 +117,34 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
             continue
     return new_valid_list
 
-# screen shot position, left top right bottom, left and right is solid each capture, only top and bottom is variable
-def __ScreenShot__(top):
-    screenShot = ImageGrab.grab(bbox=(1105, top, 1775, top + 135))
-    screenShot.save("data/screenshot/img2.png") 
 
-# project initialize, set the top equals to 410 and initialize the model.
 
-print("start the game")
-autoclick.__openAndResizeTheWebsite__()
-
-# use a loop to guess the correct word
-for i in range(6):
+successCount = 0
+roundList = []
+# objectWord = random.choice(data.test_word_list)
+objectWord = "zests"
+# use a timesPlay store how many times it takes to work out the right word
+timesPlay = 0
+for i in range(20):
     if (i == 0):
         newWordList = data.valid_word_list
-        selectedWord = "tares"
-        print(len(newWordList))
-        print(selectedWord)
-        for letterIndex in range(len(selectedWord)):
-            autoclick.__autoClickLetters__(selectedWord[letterIndex])
-
-        time.sleep(0.5)
-        top = 447
-        top = top + i * 135
-    
-        autoclick.__autoClickLetters__("↵")
-        print("please wait for 3 seconds")
-        time.sleep(3.5)
-        __ScreenShot__(top)
-        feedback = ig.__Website__Feedback__()
-        guessResult = []
-        for resultIndex in range(5):
-            guessResult.append(feedback[resultIndex])
-            
-        # objectWord = objectWord = ObjectWord = random.choice(data.test_word_list)
-        
-        print(guessResult)
+        # selectedWord = "tares"
+        # guessResult = ws.__feedback__(selectedWord,objectWord)
     else: 
         newWordList = __Set__New__Word__List__(selectedWord,guessResult,newWordList)
-        entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
-        selectedWord = __selectWord__(newWordList,entropyList)
-        print(len(newWordList))
-        print(selectedWord)
-        
-        for letterIndex in range(len(selectedWord)):
-            autoclick.__autoClickLetters__(selectedWord[letterIndex])
-
-        time.sleep(0.5)
-        top = 447
-        top = top + i * 135
-        
-        autoclick.__autoClickLetters__("↵")
-        print("please wait for 3 seconds")
-        time.sleep(3.5)
-        __ScreenShot__(top)
-        feedback = ig.__Website__Feedback__()
-        guessResult = []
-        for resultIndex in range(5):
-            guessResult.append(feedback[resultIndex])
-            
-        # objectWord = objectWord = ObjectWord = random.choice(data.test_word_list)
-        
-        print(guessResult)
+    entropyList = __Calculate__Entropy__Based__On__Position(newWordList)
+    selectedWord = __selectWord__(newWordList,entropyList)
+    print(selectedWord)
+    guessResult = ws.__feedback__(selectedWord,objectWord)
+    print(guessResult)
+    print("----.....")
     if(guessResult == ["green","green","green","green","green"]):
-        # successCount = successCount + 1
-        print("success")
-        # round = i
-        # print(selectedWord +" " + objectWord)
-        # successCount = successCount + 1
+        # print(objectWord)
+        # print(selectedWord)
+        successCount = successCount + 1
+        timesPlay = i + 1
+        roundList.append(timesPlay)
         break
+
+
+
