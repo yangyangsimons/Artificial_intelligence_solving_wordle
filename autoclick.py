@@ -19,7 +19,8 @@ def __openAndResizeTheWebsite__():
 
 # click the selected word.
 def __autoClickLetters__(letter):
-    time.sleep(1)
+    time.sleep(0.8)
+    # letter = tostring(letter)
     button = driver.find_element(by = By.CSS_SELECTOR,value="button[data-key=" +letter + "]")
     button.click()
 
