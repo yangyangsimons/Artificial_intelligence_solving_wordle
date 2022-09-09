@@ -71,7 +71,7 @@ def __Set__New__Word__List__(selectedWord,feedback,word_list):
             if(word.find(letter) == -1):
                 letter_status.append(True)
             else:
-                if(letter in yellow_dic.values() or letter in green_dic.values() and word[index] != letter):
+                if((letter in yellow_dic.values()) or (letter in green_dic.values()) and (word[index] != letter)):
                     letter_status.append(True)
                 else:
                     letter_status.append(False)
